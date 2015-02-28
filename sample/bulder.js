@@ -30,7 +30,8 @@ var result = builder
 .setTemplate(templates)
 .set(conf)
 .create()
+.beautify()
 .export(conf.filepath)
 .get();
 
-//console.log(result);
+console.log(result);

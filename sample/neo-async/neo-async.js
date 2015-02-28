@@ -125,7 +125,7 @@
 
     callback = callback || noop;
     var size;
-    var completed = 0;;
+    var completed = 0;
     var _iterator = thisArg ? iterator.bind(thisArg) : iterator;
 
     if (Array.isArray(collection)) {

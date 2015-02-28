@@ -1,19 +1,18 @@
 function each(collection, iterator, callback, thisArg) {
 
   "<%= callback %>";
-  "<%= each_init %>";
+  "<%= init_each %>";
   "<%= bindToIterator %>";
 
-  if (Array.isArray(collection)) {
-    size = collection.length;
+  if ("<%= collection_check_array %>") {
+    "<%= collection_size_array %>";
     if (!size) {
       return callback();
     }
     _arrayEach(collection, iterate);
-  } else if (collection && typeof collection === 'object') {
-    var keys = Object.keys(collection);
-    size = keys.length;
-    if (!size) {
+  } else if ("<%= collection_check_object %>") {
+    "<%= collection_size_object %>";
+    if ("<%= collection_check_size %>") {
       return callback();
     }
     _objectEach(collection, iterate, keys);
