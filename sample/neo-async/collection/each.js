@@ -1,44 +1,26 @@
 function each(collection, iterator, callback, thisArg) {
 
-  "<%= callback %>";
+  "<%= callback_init %>";
   "<%= init_each %>";
   "<%= bindToIterator %>";
 
   if ("<%= collection_check_array %>") {
     "<%= collection_size_array %>";
-    if (!size) {
-      return callback();
+    if ("<%= collection_check_size %>") {
+      return "<%= callback_none %>";
     }
-    _arrayEach(collection, iterate);
+    "<%= collection_each_array %>";
   } else if ("<%= collection_check_object %>") {
     "<%= collection_size_object %>";
     if ("<%= collection_check_size %>") {
-      return callback();
+      return "<%= callback_none %>";
     }
-    _objectEach(collection, iterate, keys);
+    "<%= collection_each_object %>";
   } else {
-    callback();
+    "<%= callback_none %>";
   }
 
-  function iterate(item) {
-    _iterator(item, once(done));
-  }
+  "<%= collection_iterator_each %>"
 
-  function done(err, bool) {
-    if (err) {
-      callback(err);
-      callback = noop;
-      return;
-    }
-    if (bool === false) {
-      callback();
-      callback = noop;
-      return;
-    }
-    if (++completed === size) {
-      callback();
-      callback = noop;
-    }
-  }
-
+  "<%= collection_each_done %>"
 }

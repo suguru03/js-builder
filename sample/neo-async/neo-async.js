@@ -165,7 +165,6 @@
         callback = noop;
       }
     }
-
   }
 
 }).call(this);

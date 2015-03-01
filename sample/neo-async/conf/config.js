@@ -24,22 +24,34 @@ var config = {
     size: {
       array: "size = collection.length",
       object: "var keys = Object.keys(collection); size = keys.length"
+    },
+    each: {
+      array: "_arrayEach(collection, iterate)",
+      object: "_objectEach(collection, iterate, keys)"
+    },
+    iterator: {
+      each: "function iterate(item) {" +
+      "  _iterator(item, once(done));" +
+      "}"
     }
   }
 };
 
-module.exports = _.transform(config, function(result, item, key) {
-  (function flatten(item) {
-    if (_.isPlainObject(item)) {
-      _.forEach(item, function(_item, key) {
-        flatten.call({
-          key: [this.key, key].join('_')
-        }, _item);
-      }, this);
-    } else {
-      result[this.key] = item;
-    }
-  }).call({
-    key: key
-  }, item);
-});
+config.collection.each.done = builder.base(function done(err, bool) {
+  if (err) {
+    callback(err);
+    callback = noop;
+    return;
+  }
+  if (bool === false) {
+    callback();
+    callback = noop;
+    return;
+  }
+  if (++completed === size) {
+    callback();
+    callback = noop;
+  }
+}).get();
+
+module.exports = require('../../template').resolve(config);

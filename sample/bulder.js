@@ -25,6 +25,7 @@ _.forEach(fs.readdirSync(path.resolve(dirpath, 'collection')), function(filename
 
 
 var result = builder
+.init()
 .base(base)
 .setFuncTemplate(funcTemplates)
 .setTemplate(templates)
