@@ -12,9 +12,6 @@ var config = {
   filepath: filepath,
   mode: 'use strict',
   VERSION: '0.6.1',
-  init: {
-    each: "var size; var completed = 0"
-  },
   collection: {
     check: {
       array: "Array.isArray(collection)",
@@ -24,20 +21,26 @@ var config = {
     size: {
       array: "size = collection.length",
       object: "var keys = Object.keys(collection); size = keys.length"
-    },
-    each: {
-      array: "_arrayEach(collection, iterate)",
-      object: "_objectEach(collection, iterate, keys)"
-    },
-    iterator: {
-      each: "function iterate(item) {" +
-      "  _iterator(item, once(done));" +
-      "}"
     }
+  },
+  each: {
+    init: "var size; var completed = 0",
+    array: "_arrayEach(collection, iterate)",
+    object: "_objectEach(collection, iterate, keys)",
+    iterator: "function iterate(item) {" +
+    "  _iterator(item, once(done));" +
+    "}",
+    done: '' // ↓
+  },
+  eachSeries: {
+    init: "var size, iterate, called; var completed = 0",
+    array: "iterate = function() { called = false; _iterator(collection[completed], done); }",
+    object: "iterate = function() { called = false; _iterator(collection[keys[completed]], done); }",
+    done: '' // ↓
   }
 };
 
-config.collection.each.done = builder.base(function done(err, bool) {
+config.each.done = builder.init().base(function done(err, bool) {
   if (err) {
     callback(err);
     callback = noop;
@@ -52,6 +55,23 @@ config.collection.each.done = builder.base(function done(err, bool) {
     callback();
     callback = noop;
   }
+}).get();
+
+config.eachSeries.done = builder.init().base(function done(err, bool) {
+  if (called) {
+    throw new Error('Callback was already called.');
+  }
+  called = true;
+  if (err) {
+    return callback(err);
+  }
+  if (++completed === size) {
+    return callback();
+  }
+  if (bool === false) {
+    return callback();
+  }
+  iterate();
 }).get();
 
 module.exports = require('../../template').resolve(config);

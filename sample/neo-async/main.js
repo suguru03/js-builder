@@ -122,4 +122,5 @@ function() {
   }
 
   "<%= each %>"
+  "<%= eachSeries %>"
 }

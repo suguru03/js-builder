@@ -167,4 +167,53 @@
     }
   }
 
+  function eachSeries(collection, iterator, callback, thisArg) {
+
+    callback = callback || noop;
+    var size, iterate, called;
+    var completed = 0;
+    var _iterator = thisArg ? iterator.bind(thisArg) : iterator;
+
+    if (Array.isArray(collection)) {
+      size = collection.length;
+      if (!size) {
+        return callback();
+      }
+      iterate = function() {
+        called = false;
+        _iterator(collection[completed], done);
+      };
+    } else if (collection && typeof collection === 'object') {
+      var keys = Object.keys(collection);
+      size = keys.length;
+      if (!size) {
+        return callback();
+      }
+      iterate = function() {
+        called = false;
+        _iterator(collection[keys[completed]], done);
+      };
+    } else {
+      callback();
+    }
+    iterate();
+
+    function done(err, bool) {
+      if (called) {
+        throw new Error('Callback was already called.');
+      }
+      called = true;
+      if (err) {
+        return callback(err);
+      }
+      if (++completed === size) {
+        return callback();
+      }
+      if (bool === false) {
+        return callback();
+      }
+      iterate();
+    }
+  }
+
 }).call(this);

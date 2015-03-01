@@ -19,7 +19,7 @@ var templates = {
 };
 var funcTemplates = {};
 _.forEach(fs.readdirSync(path.resolve(dirpath, 'collection')), function(filename) {
-  var key = _.trimRight(filename, '.js');
+  var key = filename.replace(/.js$/, '');
   funcTemplates[key] = fs.readFileSync(path.resolve(dirpath, 'collection', filename), encoding).replace(/\"/g, '');
 });
 
@@ -36,3 +36,4 @@ var result = builder
 .get();
 
 console.log(result);
+
